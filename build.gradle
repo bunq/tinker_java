@@ -1,0 +1,32 @@
+group 'com.bunq.tinker'
+version '0.0.1'
+
+apply plugin: 'java'
+apply plugin: 'maven'
+sourceCompatibility = 1.8
+
+repositories {
+    mavenCentral()
+    maven { url 'https://jitpack.io' }
+}
+
+dependencies {
+    testCompile group: 'junit', name: 'junit', version: '4.12'
+    // https://mvnrepository.com/artifact/commons-cli/commons-cli
+    compile group: 'commons-cli', name: 'commons-cli', version: '1.2'
+    compile 'com.github.bunq:sdk_java:0.12.4'
+}
+
+jar {
+    manifest {
+        attributes ('Main-Class': 'com.bunq.tinker.utils.TinkerRunner',
+                "Class-Path": configurations.compile.collect { it.absolutePath }.join(' ')
+        )
+    }
+}
+
+configurations {
+    jar.archiveName = 'tinker.jar'
+}
+
+apply plugin: 'idea'
