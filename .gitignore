@@ -26,8 +26,8 @@ hs_err_pid*
 
 # End of https://www.gitignore.io/api/java
 
-# Created by https://www.gitignore.io/api/gradle
 
+# Created by https://www.gitignore.io/api/gradle
 
 ### Gradle ###
 .gradle
