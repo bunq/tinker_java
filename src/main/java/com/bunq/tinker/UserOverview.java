@@ -46,7 +46,7 @@ public class UserOverview implements ITinker {
         System.out.println("");
         System.out.println("");
         System.out.println("        Want to see more monetary accounts, payments, requests or even cards?");
-        System.out.println("                Adjust this file.");
+        System.out.println("                Adjust src/main/java/com/bunq/tinker/UserOverview.java accordingly.");
         System.out.println("");
         System.out.println("");
         System.out.println("");
