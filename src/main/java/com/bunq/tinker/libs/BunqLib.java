@@ -4,6 +4,7 @@ import com.bunq.sdk.context.ApiContext;
 import com.bunq.sdk.context.ApiEnvironmentType;
 import com.bunq.sdk.context.BunqContext;
 import com.bunq.sdk.exception.BunqException;
+import com.bunq.sdk.exception.ForbiddenException;
 import com.bunq.sdk.http.Pagination;
 import com.bunq.sdk.model.generated.endpoint.Card;
 import com.bunq.sdk.model.generated.endpoint.MonetaryAccountBank;
@@ -26,8 +27,11 @@ import okhttp3.Response;
 import java.io.File;
 import java.io.IOException;
 import java.io.StringReader;
+import java.nio.file.Files;
+import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.regex.Pattern;
 
 public class BunqLib {
 
@@ -78,28 +82,12 @@ public class BunqLib {
 
         this.setupContext();
         this.setupCurrentUser();
+  /**
+   * Regex constatns.
+   */
+  private static final String REGEX_INSUFFICIENT_AUTHENTICATION = "Insufficient authentication";
     }
 
-    /**
-     *
-     */
-    private void setupContext() {
-        if (new File(this.determineBunqConfigFileName()).exists()) {
-            // Config is already present.
-        } else if (ApiEnvironmentType.SANDBOX.equals(this.environmentType)) {
-            SandboxUser sandboxUser = generateNewSandboxUser();
-            ApiContext.create(ApiEnvironmentType.SANDBOX, sandboxUser.getApiKey(), DEVICE_SERVER_DESCRIPTION).save(this.determineBunqConfigFileName());
-        } else {
-            throw new BunqException(ERROR_COULD_NOT_FIND_CONFIG_FILE);
-        }
-
-        ApiContext apiContext = ApiContext.restore(this.determineBunqConfigFileName());
-
-        apiContext.ensureSessionActive();
-        apiContext.save(this.determineBunqConfigFileName());
-
-        BunqContext.loadApiContext(apiContext);
-    }
 
     public void updateContext() {
         BunqContext.getApiContext().save(this.determineBunqConfigFileName());
@@ -152,6 +140,16 @@ public class BunqLib {
 
     public List<Payment> getAllPayment(MonetaryAccountBank monetaryAccountBank) {
         return getAllPayment(monetaryAccountBank, DEFAULT_FETCH_COUNT);
+  /**
+   */
+  private void setupContext() {
+    if (new File(this.determineBunqConfigFileName()).exists()) {
+      // Config is already present.
+    } else if (ApiEnvironmentType.SANDBOX.equals(this.environmentType)) {
+      SandboxUser sandboxUser = generateNewSandboxUser();
+      ApiContext.create(ApiEnvironmentType.SANDBOX, sandboxUser.getApiKey(), DEVICE_SERVER_DESCRIPTION).save(this.determineBunqConfigFileName());
+    } else {
+      throw new BunqException(ERROR_COULD_NOT_FIND_CONFIG_FILE);
     }
 
     public List<Payment> getAllPayment(MonetaryAccountBank monetaryAccountBank, int count) {
@@ -180,6 +178,17 @@ public class BunqLib {
 
     public List<Card> getAllCard() {
         return getAllCard(DEFAULT_FETCH_COUNT);
+  /**
+   */
+  private void handleForbiddenException(ForbiddenException forbiddenException) {
+    if (
+        ApiEnvironmentType.SANDBOX.equals(this.environmentType) &&
+            Pattern.matches(REGEX_INSUFFICIENT_AUTHENTICATION, forbiddenException.getMessage())
+        ) {
+      this.deleteOldConfig();
+      this.setupContext();
+    } else {
+      throw forbiddenException;
     }
 
     public List<Card> getAllCard(int count) {
@@ -189,6 +198,13 @@ public class BunqLib {
         return Card.list(
                 pagination.getUrlParamsCountOnly()
         ).getValue();
+  /**
+   */
+  private void deleteOldConfig() {
+    try {
+      Files.delete(Paths.get((this.determineBunqConfigFileName())));
+    } catch (IOException e) {
+      throw new BunqException(e.getMessage());
     }
 
     public static Pointer getPointerIbanForMonetaryAccountBank(MonetaryAccountBank monetaryAccountBank) {
