@@ -73,11 +73,6 @@ public class BunqLib {
   private static final int HTTP_STATUS_OK = 200;
   private static final String ERROR_COULD_NOT_DETERMINE_USER_TYPE = "Could not determine user type";
 
-  /**
-   * Regex constatns.
-   */
-  private static final String REGEX_INSUFFICIENT_AUTHENTICATION = "Insufficient authentication";
-
   private ApiEnvironmentType environmentType;
 
   private User user;
@@ -131,10 +126,7 @@ public class BunqLib {
   /**
    */
   private void handleForbiddenException(ForbiddenException forbiddenException) {
-    if (
-        ApiEnvironmentType.SANDBOX.equals(this.environmentType) &&
-            Pattern.matches(REGEX_INSUFFICIENT_AUTHENTICATION, forbiddenException.getMessage())
-        ) {
+    if (ApiEnvironmentType.SANDBOX.equals(this.environmentType)) {
       this.deleteOldConfig();
       this.setupContext();
     } else {
