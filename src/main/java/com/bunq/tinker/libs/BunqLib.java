@@ -87,6 +87,12 @@ public class BunqLib {
   /**
    */
   private void setupContext() {
+    this.setupContext(true);
+  }
+
+  /**
+   */
+  private void setupContext(boolean resetConfigIfNeeded) {
     if (new File(this.determineBunqConfigFileName()).exists()) {
       // Config is already present.
     } else if (ApiEnvironmentType.SANDBOX.equals(this.environmentType)) {
@@ -104,7 +110,11 @@ public class BunqLib {
 
       BunqContext.loadApiContext(apiContext);
     } catch (ForbiddenException forbiddenException) {
-      this.handleForbiddenException(forbiddenException);
+      if (resetConfigIfNeeded) {
+        this.handleForbiddenException(forbiddenException);
+      } else {
+        throw forbiddenException;
+      }
     }
   }
 
@@ -128,7 +138,7 @@ public class BunqLib {
   private void handleForbiddenException(ForbiddenException forbiddenException) {
     if (ApiEnvironmentType.SANDBOX.equals(this.environmentType)) {
       this.deleteOldConfig();
-      this.setupContext();
+      this.setupContext(false);
     } else {
       throw forbiddenException;
     }
