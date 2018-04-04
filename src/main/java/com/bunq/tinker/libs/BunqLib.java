@@ -14,6 +14,7 @@ import com.bunq.sdk.model.generated.endpoint.SandboxUser;
 import com.bunq.sdk.model.generated.endpoint.User;
 import com.bunq.sdk.model.generated.endpoint.UserCompany;
 import com.bunq.sdk.model.generated.endpoint.UserPerson;
+import com.bunq.sdk.model.generated.object.Amount;
 import com.bunq.sdk.model.generated.object.LabelMonetaryAccount;
 import com.bunq.sdk.model.generated.object.Pointer;
 import com.google.gson.Gson;
@@ -59,6 +60,8 @@ public class BunqLib {
   /**
    */
   private static final String POINTER_TYPE_IBAN = "IBAN";
+  private static final String POINTER_TYPE_EMAIL = "EMAIL";
+  private static final String CURRENCY_EUR = "EUR";
   private static final String MONETARY_ACCOUNT_STATUS_ACTIVE = "ACTIVE";
   private static final String DEVICE_SERVER_DESCRIPTION = "bunq Tinker java";
 
@@ -68,10 +71,22 @@ public class BunqLib {
   private static final int INDEX_FIRST = 0;
 
   /**
-   * Http constatns.
+   * Http constants.
    */
   private static final int HTTP_STATUS_OK = 200;
   private static final String ERROR_COULD_NOT_DETERMINE_USER_TYPE = "Could not determine user type";
+
+  /**
+   * Request spending money constants.
+   */
+  private static final String REQUEST_SPENDING_MONEY_AMOUNT = "500.0";
+  private static final String REQUEST_SPENDING_MONEY_RECIPIENT = "sugardaddy@bunq.com";
+  private static final String REQUEST_SPENDING_MONEY_DESCRIPTION = "Requesting some spending money.";
+
+  /**
+   * Balance constant.
+   */
+  private static final double BALANCE_ZERO = 0.0;
 
   private ApiEnvironmentType environmentType;
 
@@ -82,6 +97,7 @@ public class BunqLib {
 
     this.setupContext();
     this.setupCurrentUser();
+    this.requestSpendingMoneyIfNeeded();
   }
 
   /**
@@ -297,6 +313,19 @@ public class BunqLib {
       }
     } catch (IOException e) {
       throw new BunqException(e.getMessage());
+    }
+  }
+
+  private void requestSpendingMoneyIfNeeded() {
+    if (ApiEnvironmentType.SANDBOX.equals(environmentType)
+        && (Double.parseDouble(BunqContext.getUserContext().getPrimaryMonetaryAccountBank().getBalance().getValue())
+            <= BALANCE_ZERO)) {
+      RequestInquiry.create(
+        new Amount(REQUEST_SPENDING_MONEY_AMOUNT, CURRENCY_EUR),
+        new Pointer(POINTER_TYPE_EMAIL, REQUEST_SPENDING_MONEY_RECIPIENT),
+        REQUEST_SPENDING_MONEY_DESCRIPTION,
+        false
+      );
     }
   }
 }
