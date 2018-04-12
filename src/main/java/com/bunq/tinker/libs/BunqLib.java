@@ -32,7 +32,6 @@ import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.regex.Pattern;
 
 public class BunqLib {
 
@@ -82,7 +81,7 @@ public class BunqLib {
   private static final String REQUEST_SPENDING_MONEY_AMOUNT = "500.0";
   private static final String REQUEST_SPENDING_MONEY_RECIPIENT = "sugardaddy@bunq.com";
   private static final String REQUEST_SPENDING_MONEY_DESCRIPTION = "Requesting some spending money.";
-  private static final int REQUEST_SPENDING_MONEY_WAIT_TIME_SECONDS = 1000;
+  private static final int REQUEST_SPENDING_MONEY_WAIT_TIME_MILLISECONDS = 1000;
 
   /**
    * Balance constant.
@@ -327,7 +326,7 @@ public class BunqLib {
       );
 
       try {
-        Thread.sleep(REQUEST_SPENDING_MONEY_WAIT_TIME_SECONDS);
+        Thread.sleep(REQUEST_SPENDING_MONEY_WAIT_TIME_MILLISECONDS);
       } catch (InterruptedException exception) {
         // We don't care about being interrupted.
       }
