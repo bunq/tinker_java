@@ -317,15 +317,25 @@ public class BunqLib {
   }
 
   private void requestSpendingMoneyIfNeeded() {
-    if (ApiEnvironmentType.SANDBOX.equals(environmentType)
-        && (Double.parseDouble(BunqContext.getUserContext().getPrimaryMonetaryAccountBank().getBalance().getValue())
-            <= BALANCE_ZERO)) {
+    if (shouldRequestSpendingMoney()) {
       RequestInquiry.create(
         new Amount(REQUEST_SPENDING_MONEY_AMOUNT, CURRENCY_EUR),
         new Pointer(POINTER_TYPE_EMAIL, REQUEST_SPENDING_MONEY_RECIPIENT),
         REQUEST_SPENDING_MONEY_DESCRIPTION,
         false
       );
+
+      try {
+        Thread.sleep(2000);
+      } catch (InterruptedException exception) {
+        // We don't care about being interrupted.
+      }
     }
+  }
+
+  private boolean shouldRequestSpendingMoney() {
+    return ApiEnvironmentType.SANDBOX.equals(environmentType)
+            && (Double.parseDouble(BunqContext.getUserContext().getPrimaryMonetaryAccountBank().getBalance().getValue())
+                <= BALANCE_ZERO);
   }
 }
