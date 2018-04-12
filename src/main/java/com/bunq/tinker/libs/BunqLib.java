@@ -82,6 +82,7 @@ public class BunqLib {
   private static final String REQUEST_SPENDING_MONEY_AMOUNT = "500.0";
   private static final String REQUEST_SPENDING_MONEY_RECIPIENT = "sugardaddy@bunq.com";
   private static final String REQUEST_SPENDING_MONEY_DESCRIPTION = "Requesting some spending money.";
+  private static final int REQUEST_SPENDING_MONEY_WAIT_TIME_SECONDS = 1000;
 
   /**
    * Balance constant.
@@ -326,7 +327,7 @@ public class BunqLib {
       );
 
       try {
-        Thread.sleep(2000);
+        Thread.sleep(REQUEST_SPENDING_MONEY_WAIT_TIME_SECONDS);
       } catch (InterruptedException exception) {
         // We don't care about being interrupted.
       }
