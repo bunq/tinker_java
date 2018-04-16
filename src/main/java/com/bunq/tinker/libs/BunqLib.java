@@ -328,7 +328,7 @@ public class BunqLib {
       try {
         Thread.sleep(REQUEST_SPENDING_MONEY_WAIT_TIME_MILLISECONDS);
       } catch (InterruptedException exception) {
-        // We don't care about being interrupted.
+        System.out.println(exception.getMessage());
       }
     }
   }
