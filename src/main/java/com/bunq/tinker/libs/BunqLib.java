@@ -291,7 +291,7 @@ public class BunqLib {
     OkHttpClient client = new OkHttpClient();
 
     Request request = new Request.Builder()
-        .url("https://sandbox.public.api.bunq.com/v1/sandbox-user")
+        .url("https://public-api.sandbox.bunq.com/v1/sandbox-user")
         .post(RequestBody.create(null, new byte[0]))
         .addHeader("x-bunq-client-request-id", "1234")
         .addHeader("cache-control", "no-cache")
