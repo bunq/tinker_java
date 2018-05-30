@@ -178,8 +178,33 @@ public class BunqLib {
         ).getValue();
     }
 
-    public List<Card> getAllCard() {
-        return getAllCard(DEFAULT_FETCH_COUNT);
+    private SandboxUser generateNewSandboxUser() {
+        OkHttpClient client = new OkHttpClient();
+
+        Request request = new Request.Builder()
+            .url("https://public-api.sandbox.bunq.com/v1/sandbox-user")
+            .post(RequestBody.create(null, new byte[0]))
+            .addHeader("x-bunq-client-request-id", "1234")
+            .addHeader("cache-control", "no-cache")
+            .addHeader("x-bunq-geolocation", "0 0 0 0 NL")
+            .addHeader("x-bunq-language", "en_US")
+            .addHeader("x-bunq-region", "en_US")
+            .build();
+
+        try {
+            Response response = client.newCall(request).execute();
+            if (response.code() == HTTP_STATUS_OK) {
+                String responseString = response.body().string();
+                JsonObject jsonObject = new Gson().fromJson(responseString, JsonObject.class);
+                JsonObject apiKEy = jsonObject.getAsJsonArray(FIELD_RESPONSE).get(INDEX_FIRST).getAsJsonObject().get(FIELD_API_KEY).getAsJsonObject();
+
+                return SandboxUser.fromJsonReader(new JsonReader(new StringReader(apiKEy.toString())));
+            } else {
+                throw new BunqException(String.format(ERROR_COULD_NOT_GENERATE_NEW_API_KEY, response.body().string()));
+            }
+        } catch (IOException e) {
+            throw new BunqException(e.getMessage());
+        }
     }
 
     public List<Card> getAllCard(int count) {
@@ -232,35 +257,6 @@ public class BunqLib {
             return ((UserCompany) this.getUser().getReferencedObject()).getAlias();
         } else {
             throw new BunqException(ERROR_COULD_NOT_DETERMINE_USER_TYPE);
-        }
-    }
-
-    private SandboxUser generateNewSandboxUser() {
-        OkHttpClient client = new OkHttpClient();
-
-        Request request = new Request.Builder()
-                .url("https://sandbox.public.api.bunq.com/v1/sandbox-user")
-                .post(RequestBody.create(null, new byte[0]))
-                .addHeader("x-bunq-client-request-id", "1234")
-                .addHeader("cache-control", "no-cache")
-                .addHeader("x-bunq-geolocation", "0 0 0 0 NL")
-                .addHeader("x-bunq-language", "en_US")
-                .addHeader("x-bunq-region", "en_US")
-                .build();
-
-        try {
-            Response response = client.newCall(request).execute();
-            if (response.code() == HTTP_STATUS_OK) {
-                String responseString = response.body().string();
-                JsonObject jsonObject = new Gson().fromJson(responseString, JsonObject.class);
-                JsonObject apiKEy = jsonObject.getAsJsonArray(FIELD_RESPONSE).get(INDEX_FIRST).getAsJsonObject().get(FIELD_API_KEY).getAsJsonObject();
-
-                return SandboxUser.fromJsonReader(new JsonReader(new StringReader(apiKEy.toString())));
-            } else {
-                throw new BunqException(String.format(ERROR_COULD_NOT_GENERATE_NEW_API_KEY, response.body().string()));
-            }
-        } catch (IOException e) {
-            throw new BunqException(e.getMessage());
         }
     }
 }
