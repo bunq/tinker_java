@@ -101,7 +101,6 @@ public class AddCallbackUrl implements ITinker {
                     null, /* sessionTimeout */
                     null, /* DailyLimitWithoutConfirmationLogin */
                     allNotificationFilterUpdated
-
             );
         } else if (bunq.getUser().getReferencedObject() instanceof UserCompany) {
             UserCompany.update(
