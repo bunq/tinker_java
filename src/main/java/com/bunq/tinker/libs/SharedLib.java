@@ -232,7 +232,7 @@ public class SharedLib {
     public static void printPayment(Payment payment) {
         String currency = payment.getAmount().getCurrency();
         String value = payment.getAmount().getValue();
-        String counterpartyDisplayName = payment.getCounterpartyAlias().getLabelMonetaryAccount().getDisplayName();
+        String counterpartyDisplayName = payment.getCounterpartyAlias().getLabelUser().getDisplayName();
 
         System.out.println("  ┌───────────────────┬────────────────────────────────────────────────────");
         System.out.println("  │ ID                │ " + payment.getId());
@@ -257,7 +257,7 @@ public class SharedLib {
     public static void printRequest(RequestInquiry request) {
         String currency = request.getAmountInquired().getCurrency();
         String value = request.getAmountInquired().getValue();
-        String counterpartyDisplayName = request.getCounterpartyAlias().getLabelMonetaryAccount().getDisplayName();
+        String counterpartyDisplayName = request.getCounterpartyAlias().getLabelUser().getDisplayName();
 
         System.out.println("  ┌───────────────────┬────────────────────────────────────────────────────");
         System.out.println("  │ ID                │ " + request.getId());
@@ -283,10 +283,10 @@ public class SharedLib {
 
     public static void printCard(Card card, List<MonetaryAccountBank> allMonetaryAccountBank) {
         MonetaryAccountBank monetaryAccountBank = BunqLib.getMonetaryAccountBankFromLabel(
-                card.getLabelMonetaryAccountCurrent().getLabelMonetaryAccount(),
+                card.getLabelMonetaryAccountCurrent(),
                 allMonetaryAccountBank
         );
-        String iban = card.getLabelMonetaryAccountCurrent().getPointer().getValue();
+        String iban = card.getLabelMonetaryAccountCurrent().getIban();
         String cardDescription = card.getSecondLine() == null ? "bunq card" : card.getSecondLine();
         String monetaryAccountDescription =
                 monetaryAccountBank == null ? "account description" : monetaryAccountBank.getDescription();
