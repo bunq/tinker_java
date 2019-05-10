@@ -99,9 +99,7 @@ public class AddCallbackUrl implements ITinker {
                     null, /* subStatus */
                     null, /* legalGuardianAlias */
                     null, /* sessionTimeout */
-                    null, /* CardIds */
-                    null, /* cardLimits */
-                    null, /* dailyLimitWithoutConfirmationLogin */
+                    null, /* DailyLimitWithoutConfirmationLogin */
                     allNotificationFilterUpdated
             );
         } else if (bunq.getUser().getReferencedObject() instanceof UserCompany) {
@@ -116,6 +114,7 @@ public class AddCallbackUrl implements ITinker {
                     null, /* country */
                     null, /* ubo */
                     null, /* chamberOfCommerce */
+                    null, /* legalForm */
                     null, /* status */
                     null, /* subStatus */
                     null, /* sessionTimeout */

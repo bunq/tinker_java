@@ -41,6 +41,8 @@ public class SharedLib {
     private static final String ECHO_ACCOUNT_ID = "    Account (ID):    ";
     private static final String ECHO_CALLBACK_URL = EOL + "    Callback URL:    ";
 
+    private static final String POINTER_TYPE_PHONE = "PHONE_NUMBER";
+
     private static ApiEnvironmentType environmentType;
 
     public static CommandLine parseAllOption(String[] args) throws ParseException {
@@ -180,11 +182,11 @@ public class SharedLib {
         }
 
         System.out.println(ECHO_USER);
-        System.out.println("  ┌────────────────┬───────────────────────────────────────────────────────");
-        System.out.println("  │ ID             │ " + userId);
-        System.out.println("  ├────────────────┼───────────────────────────────────────────────────────");
-        System.out.println("  │ Username       │ " + userName);
-        System.out.println("  └────────────────┴───────────────────────────────────────────────────────");
+        System.out.println("  ┌───────────────────┬────────────────────────────────────────────────────");
+        System.out.println("  │ ID                │ " + userId);
+        System.out.println("  ├───────────────────┼────────────────────────────────────────────────────");
+        System.out.println("  │ Username          │ " + userName);
+        System.out.println("  └───────────────────┴────────────────────────────────────────────────────");
     }
 
     public static void printAllMonetaryAccountBank(List<MonetaryAccountBank> allMonetaryAccountBank) {
@@ -199,23 +201,23 @@ public class SharedLib {
     public static void printMonetaryAccountBank(MonetaryAccountBank monetaryAccountBank) {
         Pointer pointerIban = BunqLib.getPointerIbanForMonetaryAccountBank(monetaryAccountBank);
 
-        System.out.println("  ┌────────────────┬───────────────────────────────────────────────────────");
-        System.out.println("  │ ID             │ " + monetaryAccountBank.getId());
-        System.out.println("  ├────────────────┼───────────────────────────────────────────────────────");
-        System.out.println("  │ Description    │ " + monetaryAccountBank.getDescription());
-        System.out.println("  ├────────────────┼───────────────────────────────────────────────────────");
-        System.out.println("  │ IBAN           │ " + pointerIban.getValue());
+        System.out.println("  ┌───────────────────┬────────────────────────────────────────────────────");
+        System.out.println("  │ ID                │ " + monetaryAccountBank.getId());
+        System.out.println("  ├───────────────────┼────────────────────────────────────────────────────");
+        System.out.println("  │ Description       │ " + monetaryAccountBank.getDescription());
+        System.out.println("  ├───────────────────┼────────────────────────────────────────────────────");
+        System.out.println("  │ IBAN              │ " + pointerIban.getValue());
 
         if (monetaryAccountBank.getBalance() == null) {
             // We don't have access to the balance of this account.
         } else {
             String currency = monetaryAccountBank.getBalance().getCurrency();
             String value = monetaryAccountBank.getBalance().getValue();
-            System.out.println("  ├────────────────┼───────────────────────────────────────────────────────");
-            System.out.println("  │ Balance        │ " + currency + " " + value);
+            System.out.println("  ├───────────────────┼────────────────────────────────────────────────────");
+            System.out.println("  │ Balance           │ " + currency + " " + value);
         }
 
-        System.out.println("  └────────────────┴───────────────────────────────────────────────────────");
+        System.out.println("  └───────────────────┴────────────────────────────────────────────────────");
     }
 
     public static void printAllPayment(List<Payment> allPayment) {
@@ -230,17 +232,17 @@ public class SharedLib {
     public static void printPayment(Payment payment) {
         String currency = payment.getAmount().getCurrency();
         String value = payment.getAmount().getValue();
-        String counterpartyDisplayName = payment.getCounterpartyAlias().getLabelMonetaryAccount().getDisplayName();
+        String counterpartyDisplayName = payment.getCounterpartyAlias().getLabelUser().getDisplayName();
 
-        System.out.println("  ┌────────────────┬───────────────────────────────────────────────────────");
-        System.out.println("  │ ID             │ " + payment.getId());
-        System.out.println("  ├────────────────┼───────────────────────────────────────────────────────");
-        System.out.println("  │ Description    │ " + payment.getDescription());
-        System.out.println("  ├────────────────┼───────────────────────────────────────────────────────");
-        System.out.println("  │ Amount         │ " + currency + " " + value);
-        System.out.println("  ├────────────────┼───────────────────────────────────────────────────────");
-        System.out.println("  │ Recipient      │ " + counterpartyDisplayName);
-        System.out.println("  └────────────────┴───────────────────────────────────────────────────────");
+        System.out.println("  ┌───────────────────┬────────────────────────────────────────────────────");
+        System.out.println("  │ ID                │ " + payment.getId());
+        System.out.println("  ├───────────────────┼────────────────────────────────────────────────────");
+        System.out.println("  │ Description       │ " + payment.getDescription());
+        System.out.println("  ├───────────────────┼────────────────────────────────────────────────────");
+        System.out.println("  │ Amount            │ " + currency + " " + value);
+        System.out.println("  ├───────────────────┼────────────────────────────────────────────────────");
+        System.out.println("  │ Recipient         │ " + counterpartyDisplayName);
+        System.out.println("  └───────────────────┴────────────────────────────────────────────────────");
     }
 
     public static void printAllRequest(List<RequestInquiry> allRequest) {
@@ -255,19 +257,19 @@ public class SharedLib {
     public static void printRequest(RequestInquiry request) {
         String currency = request.getAmountInquired().getCurrency();
         String value = request.getAmountInquired().getValue();
-        String counterpartyDisplayName = request.getCounterpartyAlias().getLabelMonetaryAccount().getDisplayName();
+        String counterpartyDisplayName = request.getCounterpartyAlias().getLabelUser().getDisplayName();
 
-        System.out.println("  ┌────────────────┬───────────────────────────────────────────────────────");
-        System.out.println("  │ ID             │ " + request.getId());
-        System.out.println("  ├────────────────┼───────────────────────────────────────────────────────");
-        System.out.println("  │ Description    │ " + request.getDescription());
-        System.out.println("  ├────────────────┼───────────────────────────────────────────────────────");
-        System.out.println("  │ Status         │ " + request.getStatus());
-        System.out.println("  ├────────────────┼───────────────────────────────────────────────────────");
-        System.out.println("  │ Amount         │ " + currency + " " + value);
-        System.out.println("  ├────────────────┼───────────────────────────────────────────────────────");
-        System.out.println("  │ Recipient      │ " + counterpartyDisplayName);
-        System.out.println("  └────────────────┴───────────────────────────────────────────────────────");
+        System.out.println("  ┌───────────────────┬────────────────────────────────────────────────────");
+        System.out.println("  │ ID                │ " + request.getId());
+        System.out.println("  ├───────────────────┼────────────────────────────────────────────────────");
+        System.out.println("  │ Description       │ " + request.getDescription());
+        System.out.println("  ├───────────────────┼────────────────────────────────────────────────────");
+        System.out.println("  │ Status            │ " + request.getStatus());
+        System.out.println("  ├───────────────────┼────────────────────────────────────────────────────");
+        System.out.println("  │ Amount            │ " + currency + " " + value);
+        System.out.println("  ├───────────────────┼────────────────────────────────────────────────────");
+        System.out.println("  │ Recipient         │ " + counterpartyDisplayName);
+        System.out.println("  └───────────────────┴────────────────────────────────────────────────────");
     }
 
     public static void printAllCard(List<Card> allCard, List<MonetaryAccountBank> allMonetaryAccountBank) {
@@ -281,38 +283,42 @@ public class SharedLib {
 
     public static void printCard(Card card, List<MonetaryAccountBank> allMonetaryAccountBank) {
         MonetaryAccountBank monetaryAccountBank = BunqLib.getMonetaryAccountBankFromLabel(
-                card.getLabelMonetaryAccountCurrent().getLabelMonetaryAccount(),
+                card.getLabelMonetaryAccountCurrent(),
                 allMonetaryAccountBank
         );
-        String iban = card.getLabelMonetaryAccountCurrent().getPointer().getValue();
+        String iban = card.getLabelMonetaryAccountCurrent().getIban();
         String cardDescription = card.getSecondLine() == null ? "bunq card" : card.getSecondLine();
         String monetaryAccountDescription =
                 monetaryAccountBank == null ? "account description" : monetaryAccountBank.getDescription();
 
-        System.out.println("  ┌────────────────┬───────────────────────────────────────────────────────");
-        System.out.println("  │ ID             │ " + card.getId());
-        System.out.println("  ├────────────────┼───────────────────────────────────────────────────────");
-        System.out.println("  │ Type           │ " + card.getType());
-        System.out.println("  ├────────────────┼───────────────────────────────────────────────────────");
-        System.out.println("  │ Name on Card   │ " + card.getNameOnCard());
-        System.out.println("  ├────────────────┼───────────────────────────────────────────────────────");
-        System.out.println("  │ Description    │ " + cardDescription);
-        System.out.println("  ├────────────────┼───────────────────────────────────────────────────────");
-        System.out.println("  │ Linked Account │ " + monetaryAccountDescription + " " + iban);
-        System.out.println("  └────────────────┴───────────────────────────────────────────────────────");
+        System.out.println("  ┌───────────────────┬────────────────────────────────────────────────────");
+        System.out.println("  │ ID                │ " + card.getId());
+        System.out.println("  ├───────────────────┼────────────────────────────────────────────────────");
+        System.out.println("  │ Type              │ " + card.getType());
+        System.out.println("  ├───────────────────┼────────────────────────────────────────────────────");
+        System.out.println("  │ Name on Card      │ " + card.getNameOnCard());
+        System.out.println("  ├───────────────────┼────────────────────────────────────────────────────");
+        System.out.println("  │ Description       │ " + cardDescription);
+        System.out.println("  ├───────────────────┼────────────────────────────────────────────────────");
+        System.out.println("  │ Linked Account    │ " + monetaryAccountDescription + " " + iban);
+        System.out.println("  └───────────────────┴────────────────────────────────────────────────────");
     }
 
     public static void printAllUserAlias(List<Pointer> allUserAlias) {
         System.out.println("   You can use these login credentials to login in to the bunq sandbox app.");
 
         for (Pointer alias : allUserAlias) {
-            System.out.println("  ┌────────────────┬───────────────────────────────────────────────────────");
-            System.out.println("  │ Value          │ " + alias.getValue());
-            System.out.println("  ├────────────────┼───────────────────────────────────────────────────────");
-            System.out.println("  │ Type           │ " + alias.getType());
-            System.out.println("  ├────────────────┼───────────────────────────────────────────────────────");
-            System.out.println("  │ Login Code     │ 000000");
-            System.out.println("  └────────────────┴───────────────────────────────────────────────────────");
+            System.out.println("  ┌───────────────────┬────────────────────────────────────────────────────");
+            System.out.println("  │ Value             │ " + alias.getValue());
+            System.out.println("  ├───────────────────┼────────────────────────────────────────────────────");
+            System.out.println("  │ Type              │ " + alias.getType());
+            System.out.println("  ├───────────────────┼────────────────────────────────────────────────────");
+            if (alias.getType().equals(POINTER_TYPE_PHONE)) {
+                System.out.println("  │ Confirmation Code │ 123456");
+                System.out.println("  ├───────────────────┼────────────────────────────────────────────────────");
+            }
+            System.out.println("  │ Login Code        │ 000000");
+            System.out.println("  └───────────────────┴────────────────────────────────────────────────────");
         }
     }
 }
