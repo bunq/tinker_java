@@ -16,8 +16,12 @@ public class TinkerRunner {
 
         String className = args[0];
         Class classObject = Class.forName(PACKAGE_TINKER_PREFIX + className);
-        ITinker tinker = (ITinker) classObject.newInstance();
 
-        tinker.run(args);
+        try {
+            ITinker tinker = (ITinker) classObject.getConstructor().newInstance();
+            tinker.run(args);
+        } catch (NoSuchMethodException exception) {
+            System.out.println("Couldn\'t start " + className + ". Class is missing or invalid.");
+        }
     }
 }
