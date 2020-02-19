@@ -1,6 +1,7 @@
 package com.bunq.tinker;
 
 import com.bunq.sdk.context.ApiEnvironmentType;
+import com.bunq.sdk.model.core.NotificationFilterUrlUserInternal;
 import com.bunq.sdk.model.generated.endpoint.NotificationFilterUrlUser;
 import com.bunq.sdk.model.generated.object.NotificationFilterUrl;
 import com.bunq.tinker.libs.BunqLib;
@@ -55,7 +56,7 @@ public class AddCallbackUrl implements ITinker {
                 new NotificationFilterUrl(NOTIFICATION_CATEGORY_MUTATION, callbackUrl)
         );
 
-        NotificationFilterUrlUser.create(allNotificationFilterUpdated);
+        NotificationFilterUrlUserInternal.createWithListResponse(allNotificationFilterUpdated);
 
         System.out.println();
         System.out.println("  | ✅  Callback URL added");
