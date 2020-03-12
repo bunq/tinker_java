@@ -1,11 +1,9 @@
 package com.bunq.tinker;
 
 import com.bunq.sdk.context.ApiEnvironmentType;
-import com.bunq.sdk.exception.BunqException;
-import com.bunq.sdk.model.generated.endpoint.UserCompany;
-import com.bunq.sdk.model.generated.endpoint.UserLight;
-import com.bunq.sdk.model.generated.endpoint.UserPerson;
-import com.bunq.sdk.model.generated.object.NotificationFilter;
+import com.bunq.sdk.model.core.NotificationFilterUrlUserInternal;
+import com.bunq.sdk.model.generated.endpoint.NotificationFilterUrlUser;
+import com.bunq.sdk.model.generated.object.NotificationFilterUrl;
 import com.bunq.tinker.libs.BunqLib;
 import com.bunq.tinker.libs.SharedLib;
 import com.bunq.tinker.utils.ITinker;
@@ -20,14 +18,7 @@ public class AddCallbackUrl implements ITinker {
     /**
      * Notification filter constants.
      */
-    private static final String NOTIFICATION_DELIVERY_METHOD_URL = "URL";
     private static final String NOTIFICATION_CATEGORY_MUTATION = "MUTATION";
-
-    /**
-     * Error constants.
-     */
-    private static final String ERROR_UNKNOWN_USER_TYPE_RETURNED = "Unknown user type returned.";
-    private static final String ERROR_CANNOT_UPDATE_NOTIFICATION_FILTER_FOR_USER_LIGHT = "Unknown user type returned.";
 
     /**
      * @param args
@@ -50,82 +41,22 @@ public class AddCallbackUrl implements ITinker {
         System.out.println("    ...");
         System.out.println();
 
-        List<NotificationFilter> allNotificationFilterCurrent;
-        List<NotificationFilter> allNotificationFilterUpdated = new ArrayList<>();
+        List<NotificationFilterUrlUser> allNotificationFilterCurrent = NotificationFilterUrlUser.list().getValue();
+        List<NotificationFilterUrl> allNotificationFilterUpdated = new ArrayList<>();
 
-        if (bunq.getUser().getReferencedObject() instanceof UserPerson) {
-            allNotificationFilterCurrent = bunq.getUser().getUserPerson().getNotificationFilters();
-        } else if (bunq.getUser().getReferencedObject() instanceof UserCompany) {
-            allNotificationFilterCurrent = bunq.getUser().getUserCompany().getNotificationFilters();
-        } else if (bunq.getUser().getReferencedObject() instanceof UserLight) {
-            allNotificationFilterCurrent = bunq.getUser().getUserLight().getNotificationFilters();
-        } else {
-            throw new BunqException(ERROR_UNKNOWN_USER_TYPE_RETURNED);
-        }
-
-        for (NotificationFilter notificationFilter : allNotificationFilterCurrent) {
-            if (callbackUrl.equals(notificationFilter.getNotificationTarget())) {
-                allNotificationFilterUpdated.add(notificationFilter);
+        for (NotificationFilterUrlUser notificationFilterUrlUser : allNotificationFilterCurrent) {
+            for (NotificationFilterUrl notificationFilterUrl : notificationFilterUrlUser.getNotificationFilters()) {
+                if (callbackUrl.equals(notificationFilterUrl.getNotificationTarget())) {
+                    allNotificationFilterUpdated.add(notificationFilterUrl);
+                }
             }
         }
 
         allNotificationFilterUpdated.add(
-                new NotificationFilter(NOTIFICATION_DELIVERY_METHOD_URL, callbackUrl, NOTIFICATION_CATEGORY_MUTATION)
+                new NotificationFilterUrl(NOTIFICATION_CATEGORY_MUTATION, callbackUrl)
         );
 
-        if (bunq.getUser().getReferencedObject() instanceof UserPerson) {
-            UserPerson.update(
-                    null, /* firstName */
-                    null, /* middleName */
-                    null, /* lastName */
-                    null, /* publicNickName */
-                    null, /* addressMain */
-                    null, /* addressPostal */
-                    null, /* avatarUuid */
-                    null, /* taxResident */
-                    null, /* documentType */
-                    null, /* documentNumber */
-                    null, /* documentCountryOfIssuance */
-                    null, /* documentFrontAttachmentId */
-                    null, /* documentBackAttachmentId */
-                    null, /* dataOfBirth */
-                    null, /* placeOfBirth */
-                    null, /* countryOfBirth */
-                    null, /* nationality */
-                    null, /* language */
-                    null, /* region */
-                    null, /* gender */
-                    null, /* status */
-                    null, /* subStatus */
-                    null, /* legalGuardianAlias */
-                    null, /* sessionTimeout */
-                    null, /* DailyLimitWithoutConfirmationLogin */
-                    allNotificationFilterUpdated
-            );
-        } else if (bunq.getUser().getReferencedObject() instanceof UserCompany) {
-            UserCompany.update(
-                    null, /* name */
-                    null, /* publicNickName */
-                    null, /* avatarUuid */
-                    null, /* addressMain */
-                    null, /* addressPostal */
-                    null, /* language */
-                    null, /* region */
-                    null, /* country */
-                    null, /* ubo */
-                    null, /* chamberOfCommerce */
-                    null, /* legalForm */
-                    null, /* status */
-                    null, /* subStatus */
-                    null, /* sessionTimeout */
-                    null, /* dailyLimitWithoutConfirmationLogin */
-                    allNotificationFilterUpdated
-            );
-        } else if (bunq.getUser().getReferencedObject() instanceof UserLight) {
-            throw new BunqException(ERROR_CANNOT_UPDATE_NOTIFICATION_FILTER_FOR_USER_LIGHT);
-        } else {
-            throw new BunqException(ERROR_UNKNOWN_USER_TYPE_RETURNED);
-        }
+        NotificationFilterUrlUserInternal.createWithListResponse(allNotificationFilterUpdated);
 
         System.out.println();
         System.out.println("  | ✅  Callback URL added");
