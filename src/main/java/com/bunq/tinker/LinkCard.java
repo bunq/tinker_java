@@ -55,7 +55,6 @@ public class LinkCard implements ITinker {
                 null, /* cardLimit */
                 null, /* cardLimitAtm */
                 null, /* magStripePermissions */
-                null, /* countryPermission */
                 allCardPinAssignment
         );
 
