@@ -45,13 +45,13 @@ public class BunqLib {
   private static final String ERROR_COULD_NOT_FIND_CONFIG_FILE = "Could not find a bunq configuration to load.";
 
   /**
-   * FileName constatns.
+   * FileName constants.
    */
   private static final String FILE_NAME_BUNQ_CONF_PRODUCTION = "bunq-production.conf";
   private static final String FILE_NAME_BUNQ_CONF_SANDBOX = "bunq-sandbox.conf";
 
   /**
-   * Field constatns.
+   * Field constants.
    */
   private static final String FIELD_RESPONSE = "Response";
   private static final String FIELD_API_KEY = "ApiKey";
@@ -291,7 +291,7 @@ public class BunqLib {
     OkHttpClient client = new OkHttpClient();
 
     Request request = new Request.Builder()
-        .url("https://public-api.sandbox.bunq.com/v1/sandbox-user")
+        .url("https://public-api.sandbox.bunq.com/v1/sandbox-user-person")
         .post(RequestBody.create(null, new byte[0]))
         .addHeader("x-bunq-client-request-id", "1234")
         .addHeader("cache-control", "no-cache")
