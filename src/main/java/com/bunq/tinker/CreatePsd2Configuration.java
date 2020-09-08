@@ -47,7 +47,13 @@ public class CreatePsd2Configuration implements ITinker {
         CommandLine allOption = parser.parse(options, args);
 
         assertMandatoryOptions(allOption);
-
+       
+        SharedLib.printHeader();
+      
+        System.out.println();
+        System.out.println("  | Creating API Context for PSD2 usage.);
+        System.out.println();
+        
         ApiContext apiContext = ApiContext.createForPsd2(
             SharedLib.determineEnvironmentType(allOption),
             SecurityUtils.getCertificateFromFile(allOption.getOptionValue(OPTION_CERTIFICATE)),
@@ -61,7 +67,7 @@ public class CreatePsd2Configuration implements ITinker {
 
         apiContext.save(FILE_CONTEXT);
 
-        System.out.println(" | PSD2 configuration created. Saved as bunq-psd.conf!");
+        System.out.println(" | PSD2 configuration created. Saved as bunq-psd2.conf!");
     }
 
     /**
